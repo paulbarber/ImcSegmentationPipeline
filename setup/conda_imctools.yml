@@ -15,5 +15,6 @@ dependencies:
   - scikit-image
   - scipy
   - git
+  - ruamel.yaml
   - pip:
-        - "git+https://github.com/BodenmillerGroup/imctools.git@master"
+        - "git+https://github.com/BodenmillerGroup/imctools.git@imcpipeline"

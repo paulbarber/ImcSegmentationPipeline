@@ -4,12 +4,8 @@
 # In[1]:
 
 
-from imctools.scripts import ometiff2analysis
-from imctools.scripts import imc2tiff
-from imctools.scripts import ome2micat
-from imctools.scripts import probablity2uncertainty
-from imctools.scripts import convertfolder2imcfolder
-from imctools.scripts import exportacquisitioncsv
+import imctools.scripts.pipeline.configuration as configuration
+import imctools.scripts.pipeline.steps as steps
 
 
 # In[2]:
@@ -18,6 +14,24 @@ from imctools.scripts import exportacquisitioncsv
 import os
 import re
 import zipfile
+import sys
+
+
+# In[3]:
+
+
+from ruamel.yaml import YAML
+
+
+# In[4]:
+
+
+# This should be removed in the final version
+get_ipython().run_line_magic('load_ext', 'autoreload')
+get_ipython().run_line_magic('autoreload', '1')
+get_ipython().run_line_magic('aimport', 'imctools.scripts.pipeline.steps')
+get_ipython().run_line_magic('aimport', 'imctools.scripts.pipeline.configuration')
+get_ipython().run_line_magic('aimport', '')
 
 
 # 
@@ -80,92 +94,28 @@ import zipfile
 
 # ### Input folders (Needs to be adapted for use)
 
-# In[3]:
-
-
-# the folders with the ziped acquisition files for the analysis
-folders = ['../example_data']
-
-# part that all considered acquisition files need to have in common
-# -> can be adapted to only process a subset of the acquisitions
-file_regexp = '.*.zip'
-
-# output folder
-folder_base = '/home/vitoz/Data/Analysis/201805_cp_segmentation_example'
-
-
-# pannel
-csv_pannel = '../config/example_pannel.csv'
-csv_pannel_metal = 'Metal Tag'
-csv_pannel_ilastik = 'ilastik'
-csv_pannel_full = 'full'
-
-
-# ### Other Input (only change if really necessary and you know what your doing)
-
-# In[4]:
-
-
-# parameters for resizing the images for ilastik
-
-folder_analysis = os.path.join(folder_base, 'tiffs')
-folder_ilastik = os.path.join(folder_base, 'ilastik')
-folder_ome = os.path.join(folder_base, 'ometiff')
-folder_cp = os.path.join(folder_base, 'cpout')
-folder_histocat = os.path.join(folder_base, 'histocat')
-folder_uncertainty = os.path.join(folder_base, 'uncertainty')
-
-suffix_full = '_full'
-suffix_ilastik = '_ilastik'
-suffix_ilastik_scale = '_s2'
-suffix_mask = '_mask.tiff'
-suffix_probablities = '_Probabilities'
-
-
-failed_images = list()
-
-# Make a list of all the analysis stacks with format:
-# (CSV_NAME, SUFFIX, ADDSUM)
-# CSV_NAME: name of the column in the CSV to be used
-# SUFFIX: suffix of the tiff
-# ADDSUM: BOOL, should the sum of all channels be added as the first channel?
-list_analysis_stacks =[
-    (csv_pannel_ilastik, suffix_ilastik, 1),
-    (csv_pannel_full, suffix_full, 0)
-]
-
-
-# Generate all the folders if necessary
-
 # In[5]:
 
 
-for fol in [folder_base, folder_analysis, folder_ilastik,
-            folder_ome, folder_cp, folder_histocat, folder_uncertainty]:
-    if not os.path.exists(fol):
-        os.makedirs(fol)
+fn_config = '../config/config_pipeline.yml'
 
-
-# ### Optional step: download the example data
-# This example comes with example data.
-# => Diseable the cell if you are using your own data
 
 # In[6]:
 
 
-## This will download the example data - remove if you work with your own data!
-import urllib.request
-fol_example = folders[0]
-os.makedirs(os.path.abspath(fol_example), exist_ok=True)
-urls = [('20170905_Fluidigmworkshopfinal_SEAJa.zip',
-         'https://www.dropbox.com/s/awyq9p7n7dexgyt/20170905_Fluidigmworkshopfinal_SEAJa.zip?dl=1') ,
-       ('20170906_FluidigmONfinal_SE.zip',
-        'https://www.dropbox.com/s/0pdt1ke4b07v7zd/20170906_FluidigmONfinal_SE.zip?dl=1')]
-       
-for fn, url in urls:
-    fn = os.path.join(fol_example, fn)
-    if os.path.exists(fn) == False:
-        urllib.request.urlretrieve(url, fn)
+get_ipython().run_cell_magic('file', '$fn_config', "# %load configuration.conf_str\n\n# This section specifies the input files.\ninput_files:\n    # This defines a list of folders  where to look for input files which must be zip files\n    # containing each 1 .mcd file together with (optionally)  all the .txt files of this\n    # acquisition session.\n    folders: ['../example_data']\n    # This regular expression can be used to further select .zip files for processing\n    file_regexp: '.zip'\n\n# This section defines the output folders\noutput_folders:\n    # This indicates the base folder for all the output subfolders:\n    base: '/home/vitoz/Data/Analysis/201811_icp_segmentation_example4'\n    subfolders:\n        # The ome subfolder contains all the acquisitions as ometiffs together with the\n        # metadata in .csv format.\n        ome: 'ometiff'\n        # The cpout subfolder will contain the final cellprofiler output.\n        cpout: 'cpout'\n        # The analysis subfolder will contain all the .zip files that are used for analysis.\n        analysis: 'analysis'\n        # The ilastik folder will contain all the .hd5 files used for Ilastik Pixel classification.\n        ilastik: 'ilastik'\n        # The uncertainty folder can contain the uncertainties that can be generated from the\n        # probabiprobabilities from the Ilastik pixel classification.\n        uncertainty: 'uncertainty'\n        # The Histocat folder will contain the images in the HistoCat folder structure.\n        histocat: 'histocat'\n\n# This configuration saves different substacks of the acquired images in a format compatible for\n# analanalysis with CellProfiler and Ilastik.\nanalysis_stack_generation:\n    # The pannel is a CSV file with a column representing the metal tag and a column containing\n    # boolean (0/1) values which channels to select for the different stacks.\n    pannel:\n        # The filename of the pannel .csv file\n        csv_filename: '../config/example_pannel.csv'\n        # The name of the column containing the metal tag\n        metal_column: 'Metal Tag'\n    # An arbitrary number of stacks can be defined. Classically a 'full' stack is defined,\n    # containing all the channels(=metals) that should be measured using CellProfiler as well as\n    # an 'ilastik' stack, containing only a subset of channels that contain information for the\n    # pixelpixel classification used for segmentation.\n    stacks:\n        # The stack name indicated the name of the stack to be generated\n        - stack_name: 'full'\n          # The stack column is the column that contains the boolean selection for the channels to\n          # be used for this stack\n          csv_column: 'full'\n          # The suffix is added to the filename before the file ending and is used to identify the\n          # stack in the later analysis.\n          suffix: '_full'\n\n        - stack_name: 'ilastik'\n          csv_column: 'ilastik'\n          suffix: '_ilastik'\n          # With aditional stack parameters, keyword arguments used by the ometiff_2_analysis script\n          additional_parameters:\n            # A commonly used one parameter to set is 'addsum', which will add the sum of all channels of the stack as\n            # first channel of the stack, which is convenient for forground/background\n            # discrimination in pixel classification.\n            addsum: True")
+
+
+# In[7]:
+
+
+conf = configuration.load_config(fn_config)
+
+
+# In[8]:
+
+
+steps.initialize_folderstructure(config=conf)
 
 
 # ### Convert zipped IMC acquisitions to input format
@@ -175,37 +125,34 @@ for fn, url in urls:
 # - The `.mcd` file
 # - All associated `.txt` file generated during the acquisition of this `.mcd` file -> Don't change any of the filenames!!
 
-# Convert mcd containing folders into imc zip folders
-
-# In[7]:
+# In[9]:
 
 
-get_ipython().run_cell_magic('time', '', "failed_images = list()\nre_fn = re.compile(file_regexp)\n\nfor fol in folders:\n    for fn in os.listdir(fol):\n        if re_fn.match(fn):\n            fn_full = os.path.join(fol, fn)\n            print(fn_full)\n            try:\n                convertfolder2imcfolder.convert_folder2imcfolder(fn_full, out_folder=folder_ome,\n                                                                   dozip=False)\n            except:\n                print('Failed Folder: ' + fn_full)")
+steps.convert_rawzip_to_ome(conf)
 
 
 # Generate a csv with all the acquisition metadata
 
-# In[8]:
+# In[10]:
 
 
-exportacquisitioncsv.export_acquisition_csv(folder_ome, fol_out=folder_cp)
-
-
-# Convert ome.tiffs to a HistoCAT compatible format, e.g. to do some visualization and channel checking.
-
-# In[9]:
-
-
-get_ipython().run_cell_magic('time', '', "if not(os.path.exists(folder_histocat)):\n    os.makedirs(folder_histocat)\nfor fol in os.listdir(folder_ome):\n    ome2micat.omefolder2micatfolder(os.path.join(folder_ome,fol), folder_histocat, dtype='uint16')")
+steps.exportacquisitionmetadata(conf)
 
 
 # Generate the analysis stacks
 
-# In[10]:
+# In[11]:
 
 
-get_ipython().run_cell_magic('time', '', "for fol in os.listdir(folder_ome):\n    sub_fol = os.path.join(folder_ome, fol)\n    for img in os.listdir(sub_fol):\n        if not img.endswith('.ome.tiff'):\n            continue\n        basename = img.rstrip('.ome.tiff')\n        print(img)\n        for (col, suffix, addsum) in list_analysis_stacks:\n            try:\n                ometiff2analysis.ometiff_2_analysis(os.path.join(sub_fol, img), folder_analysis,\n                                                basename + suffix, pannelcsv=csv_pannel, metalcolumn=csv_pannel_metal,\n                                                usedcolumn=col, addsum=addsum, bigtiff=False,\n                                               pixeltype='uint16')\n            except:\n                print('Error in', img )\n            \n")
+steps.generate_analysisstacks(conf)
 
+
+# Convert ome.tiffs to a HistoCAT compatible format, e.g. to do some visualization and channel checking.
+%%time
+if not(os.path.exists(folder_histocat)):
+    os.makedirs(folder_histocat)
+for fol in os.listdir(folder_ome):
+    ome2micat.omefolder2micatfolder(os.path.join(folder_ome,fol), folder_histocat, dtype='uint16')
 
 # # Next steps
 # 
@@ -355,7 +302,7 @@ get_ipython().run_cell_magic('time', '', "for fol in os.listdir(folder_ome):\n  
 
 # ## Convert probabilities to uncertainties
 
-# In[11]:
+# In[ ]:
 
 
 # For training
@@ -365,7 +312,7 @@ for fn in os.listdir(folder_ilastik):
         probablity2uncertainty.probability2uncertainty(os.path.join(folder_ilastik,fn), folder_uncertainty)
 
 
-# In[12]:
+# In[ ]:
 
 
 # For the data
@@ -377,7 +324,7 @@ for fn in os.listdir(folder_analysis):
 
 # ## Generate the histocat folder with masks
 
-# In[13]:
+# In[ ]:
 
 
 get_ipython().run_cell_magic('time', '', "for fol in os.listdir(folder_ome):\n    ome2micat.omefolder2micatfolder(os.path.join(folder_ome,fol), folder_histocat, \n                                         fol_masks=folder_analysis, mask_suffix=suffix_mask, dtype='uint16')")
