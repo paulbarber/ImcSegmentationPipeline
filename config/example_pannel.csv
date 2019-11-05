@@ -1,13 +1,13 @@
 Tube Number,Metal Tag,Target,Antibody Clone,Stock Concentration,Final Concentration / Dilution,uL to add,full,ilastik
-,Nd150,,,,,,1,1
-,Sm152,,,,,,1,1
-,Gd156,,,,,,1,1
-,Gd158,,,,,,1,1
-,Tb159,,,,,,1,1
-,Dy161,,,,,,1,1
-,Dy162,,,,,,1,1
-,Ho165,,,,,,1,1
-,Er168,,,,,,1,1
-,Er170,,,,,,1,1
-,Ir191,,,,,,1,1
-,Ir193,,,,,,1,1
+,Nd150,PDL-1,,,,,1,1
+,Sm152,CD45,,,,,1,1
+,Gd156,CD4,,,,,1,1
+,Gd158,E-Cadherin,,,,,1,1
+,Tb159,CD68,,,,,1,1
+,Dy161,CD20,,,,,1,1
+,Dy162,CD8a,,,,,1,1
+,Ho165,PD-1,,,,,1,1
+,Er168,Ki67,,,,,1,1
+,Er170,CD3,,,,,1,1
+,Ir191,DNA,,,,,1,1
+,Ir193,DNA,,,,,1,1
