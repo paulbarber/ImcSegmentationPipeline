@@ -104,18 +104,18 @@ Smooth:[module_num:7|svn_version:\'Unknown\'|variable_revision_number:2|show_win
     Edge intensity difference:\xff\xfe0\x00.\x001\x00
     Clip intensities to 0 and 1?:\xff\xfeY\x00e\x00s\x00
 
-IdentifyPrimaryObjects:[module_num:8|svn_version:\'Unknown\'|variable_revision_number:13|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+IdentifyPrimaryObjects:[module_num:8|svn_version:\'Unknown\'|variable_revision_number:13|show_window:True|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
     Select the input image:\xff\xfeN\x00u\x00c\x00F\x00i\x00l\x00
     Name the primary objects to be identified:\xff\xfeN\x00u\x00c\x00l\x00e\x00i\x00
-    Typical diameter of objects, in pixel units (Min,Max):\xff\xfe2\x00,\x003\x000\x00
+    Typical diameter of objects, in pixel units (Min,Max):\xff\xfe4\x00,\x004\x000\x00
     Discard objects outside the diameter range?:\xff\xfeN\x00o\x00
     Discard objects touching the border of the image?:\xff\xfeY\x00e\x00s\x00
-    Method to distinguish clumped objects:\xff\xfeS\x00h\x00a\x00p\x00e\x00
+    Method to distinguish clumped objects:\xff\xfeI\x00n\x00t\x00e\x00n\x00s\x00i\x00t\x00y\x00
     Method to draw dividing lines between clumped objects:\xff\xfeS\x00h\x00a\x00p\x00e\x00
-    Size of smoothing filter:\xff\xfe1\x00
+    Size of smoothing filter:\xff\xfe2\x00
     Suppress local maxima that are closer than this minimum allowed distance:\xff\xfe7\x00.\x000\x00
     Speed up by using lower-resolution image to find local maxima?:\xff\xfeY\x00e\x00s\x00
-    Fill holes in identified objects?:\xff\xfeA\x00f\x00t\x00e\x00r\x00 \x00d\x00e\x00c\x00l\x00u\x00m\x00p\x00i\x00n\x00g\x00 \x00o\x00n\x00l\x00y\x00
+    Fill holes in identified objects?:\xff\xfeA\x00f\x00t\x00e\x00r\x00 \x00b\x00o\x00t\x00h\x00 \x00t\x00h\x00r\x00e\x00s\x00h\x00o\x00l\x00d\x00i\x00n\x00g\x00 \x00a\x00n\x00d\x00 \x00d\x00e\x00c\x00l\x00u\x00m\x00p\x00i\x00n\x00g\x00
     Automatically calculate size of smoothing filter for declumping?:\xff\xfeN\x00o\x00
     Automatically calculate minimum allowed distance between local maxima?:\xff\xfeY\x00e\x00s\x00
     Handling of objects if excessive number of objects identified:\xff\xfeC\x00o\x00n\x00t\x00i\x00n\x00u\x00e\x00
@@ -143,7 +143,7 @@ MeasureObjectSizeShape:[module_num:9|svn_version:\'Unknown\'|variable_revision_n
     Select objects to measure:\xff\xfeN\x00u\x00c\x00l\x00e\x00i\x00
     Calculate the Zernike features?:\xff\xfeY\x00e\x00s\x00
 
-FilterObjects:[module_num:10|svn_version:\'Unknown\'|variable_revision_number:8|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+FilterObjects:[module_num:10|svn_version:\'Unknown\'|variable_revision_number:8|show_window:True|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
     Select the objects to filter:\xff\xfeN\x00u\x00c\x00l\x00e\x00i\x00
     Name the output objects:\xff\xfeN\x00u\x00c\x00F\x00i\x00l\x00
     Select the filtering mode:\xff\xfeM\x00e\x00a\x00s\x00u\x00r\x00e\x00m\x00e\x00n\x00t\x00s\x00
@@ -157,11 +157,11 @@ FilterObjects:[module_num:10|svn_version:\'Unknown\'|variable_revision_number:8|
     Assign overlapping child to:\xff\xfeB\x00o\x00t\x00h\x00 \x00p\x00a\x00r\x00e\x00n\x00t\x00s\x00
     Select the measurement to filter by:\xff\xfeA\x00r\x00e\x00a\x00S\x00h\x00a\x00p\x00e\x00_\x00A\x00r\x00e\x00a\x00
     Filter using a minimum measurement value?:\xff\xfeY\x00e\x00s\x00
-    Minimum value:\xff\xfe2\x00
-    Filter using a maximum measurement value?:\xff\xfeN\x00o\x00
-    Maximum value:\xff\xfe1\x00.\x000\x00
+    Minimum value:\xff\xfe5\x000\x00
+    Filter using a maximum measurement value?:\xff\xfeY\x00e\x00s\x00
+    Maximum value:\xff\xfe5\x000\x000\x00
 
-IdentifySecondaryObjects:[module_num:11|svn_version:\'Unknown\'|variable_revision_number:10|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+IdentifySecondaryObjects:[module_num:11|svn_version:\'Unknown\'|variable_revision_number:10|show_window:True|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
     Select the input objects:\xff\xfeN\x00u\x00c\x00F\x00i\x00l\x00
     Name the objects to be identified:\xff\xfeC\x00e\x00l\x00l\x00s\x00
     Select the method to identify the secondary objects:\xff\xfeP\x00r\x00o\x00p\x00a\x00g\x00a\x00t\x00i\x00o\x00n\x00
@@ -196,7 +196,7 @@ RescaleObjects:[module_num:12|svn_version:\'Unknown\'|variable_revision_number:1
     Select the operation:\xff\xfeD\x00o\x00w\x00n\x00s\x00c\x00a\x00l\x00e\x00 \x00o\x00b\x00j\x00e\x00c\x00t\x00s\x00 \x00w\x00i\x00t\x00h\x00 \x00a\x00 \x00s\x00c\x00a\x00l\x00i\x00n\x00g\x00 \x00f\x00a\x00c\x00t\x00o\x00r\x00
     Factor to scale the object mask:\xff\xfe0\x00.\x005\x00
 
-ConvertObjectsToImage:[module_num:13|svn_version:\'Unknown\'|variable_revision_number:1|show_window:False|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
+ConvertObjectsToImage:[module_num:13|svn_version:\'Unknown\'|variable_revision_number:1|show_window:True|notes:\x5B\x5D|batch_state:array(\x5B\x5D, dtype=uint8)|enabled:True|wants_pause:False]
     Select the input objects:\xff\xfeR\x00e\x00s\x00c\x00a\x00l\x00e\x00d\x00C\x00e\x00l\x00l\x00s\x00
     Name the output image:\xff\xfeC\x00e\x00l\x00l\x00I\x00m\x00a\x00g\x00e\x00
     Select the color format:\xff\xfeu\x00i\x00n\x00t\x001\x006\x00
